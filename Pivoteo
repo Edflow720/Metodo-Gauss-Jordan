@@ -1,0 +1,109 @@
+package gauss;
+
+import java.util.Scanner;
+import static java.lang.Math.abs;
+import java.text.DecimalFormat;
+
+public class Gauss {
+
+    public static void main(String[] args) {
+        Scanner ent = new Scanner (System.in);
+        DecimalFormat df = new DecimalFormat("#.00"); 
+        
+        double [][] M = new double [20][20];
+        int n;
+        
+        System.out.println("Resolver Sistemas de Ecuaciones Lineales por el Método de Gauss Jordan");
+        System.out.print("Ingrese el número de ecuaciones a solventar: ");
+        n = ent.nextInt();
+        System.out.println("");
+        ingresar_coeficientes(M,n);
+        
+        System.out.println("Matriz aumentada: ");
+        for(int i=0;i<n;i++){
+           for(int j=0;j<n+1;j++){
+              System.out.print(df.format(M[i][j]) + " " );            
+           }
+           System.out.println();
+        }
+        
+        System.out.println("");
+        
+        System.out.println("Matriz reducida: ");
+        gauss_jordan(M,n);
+        for(int i=0;i<n;i++){
+           for(int j=0;j<n+1;j++){
+               System.out.print(df.format(M[i][j]) + " ");
+           }
+           System.out.println();
+        }
+        
+        System.out.println("");
+            
+        System.out.println("solucion en base a X: ");      
+        for(int i=0;i<n;i++){
+            System.out.println("X"+ (i+1) + " = " + df.format(M[i][n]) + " ");
+        }
+        System.out.println();
+    }
+    
+     public static void ingresar_coeficientes(double[][] M, int n) {
+        Scanner ent= new Scanner(System.in);
+        System.out.println("Ingrese los coeficientes de las ecuaciones: ");
+        for(int i=0;i<n;i++){
+            System.out.println("ecuacion " + (i+1) + ": ");
+            for(int j=0;j < n+1; j++){
+                M[i][j] = ent.nextDouble();
+           }
+           System.out.println("");
+        }  
+     }
+
+    
+    public static void gauss_jordan(double[][] M, int n) {    
+    double may;//variable para almacenar el mayor de la columna k
+    int ind;//indice del mayor-->indice de may
+    double aux;
+    double pivote;
+    
+    for(int k=0;k<n;k++){//recorrer columnas de la matriz reducida
+        may= abs(M[k][k]);
+        ind=k;
+        //recorrer filas de la columna k para buscar el indice del mayor
+        for(int l=k+1;l<n;l++){
+            if(may<abs(M[l][k])){
+                may=abs(M[l][k]);
+                ind=l;
+            }
+            
+        }
+        //cambiar filas
+        if(k!=ind){
+            for(int i=0;i<n+1;i++){
+                aux=M[k][i];
+                M[k][i]=M[ind][i];
+                M[ind][i]=aux;
+            }
+            
+        }
+        if(M[k][k]==0){
+            System.out.println("No tiene solucion");
+            break;
+        }else{
+            for(int i=0;i<n;i++){//recorrer fila
+                if(i!=k){
+                    pivote=-M[i][k];
+                    for(int j=k;j<n+1;j++){//recorrer elementos de una fila
+                        M[i][j]=M[i][j]+pivote*M[k][j]/M[k][k];
+                    }
+                }else{
+                    pivote=M[k][k];
+                    for(int j=k;j<n+1;j++){
+                        M[i][j]=M[i][j]/pivote;
+                    }
+                }
+            }
+         }
+      }
+    }  
+}
